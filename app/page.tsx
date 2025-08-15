@@ -1,6 +1,6 @@
 import React from "react";
 import Sidebar from "@/components/ui/sidebar";
-import ChartClient from "./components/ChartClient";
+import ChartClient from "../components/ChartClient";
 
 export default function Home() {
   return (

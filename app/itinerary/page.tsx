@@ -1,4 +1,4 @@
-import ChartClient from "../components/ChartClient";
+import ChartClient from "@/components/ChartClient";
 
 export default function ItineraryPage() {
   return (
