@@ -1,2 +1,57 @@
-@import "tailwindcss";
-@import "tailwindcss/typography";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Настройки шрифта и базовые стили для всего приложения */
+html, body {
+  padding: 0;
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: #ffffff;
+  color: #111827; /* Tailwind gray-900 */
+}
+
+/* Ссылки без подчеркивания и с цветом темы */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Для изображений — чтобы не выходили за границы контейнера */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Кастомный скроллбар */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 9999px;
+}
+
+/* Utility: кнопка с плавным наведением */
+.btn {
+  @apply px-4 py-2 rounded-md font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200;
+}
+
+/* Utility: карточка */
+.card {
+  @apply bg-white rounded-lg shadow p-4;
+}
+
+/* Анимация fade-in для компонентов */
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
