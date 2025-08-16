@@ -38,7 +38,7 @@ export function MainScreen({ onStartRoute }: MainScreenProps) {
     } else {
       // дефолтное поведение: навигация с query-параметрами
       const params = new URLSearchParams(data).toString();
-      router.push(`/route?${params}`);
+      router.push(`/itinerary?${params}`);
     }
   };
 
