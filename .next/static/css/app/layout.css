@@ -496,6 +496,9 @@
   .min-h-16 {
     min-height: calc(var(--spacing, 0.25rem) * 16);
   }
+  .min-h-\[100dvh\] {
+    min-height: 100dvh;
+  }
   .min-h-dvh {
     min-height: 100dvh;
   }
@@ -1083,9 +1086,6 @@
   .whitespace-nowrap {
     white-space: nowrap;
   }
-  .text-\[\#333\] {
-    color: #333;
-  }
   .text-current {
     color: currentcolor;
   }
@@ -1097,6 +1097,9 @@
   }
   .text-gray-600 {
     color: var(--color-gray-600, oklch(44.6% 0.03 256.802));
+  }
+  .text-neutral-800 {
+    color: var(--color-neutral-800, oklch(26.9% 0 0));
   }
   .text-white {
     color: var(--color-white, #fff);
