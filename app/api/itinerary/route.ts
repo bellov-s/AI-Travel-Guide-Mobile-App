@@ -12,19 +12,20 @@ export async function GET(req: Request) {
   const duration = (url.searchParams.get("duration") ?? "halfday").toLowerCase();
   const persona = (url.searchParams.get("persona") ?? "local").toLowerCase();
 
-  // База моков; можно развести ветки по city/theme
+  // Координаты Ларнаки (примерные)
   const baseStops = [
-    { time: "10:00", name: "Saint Lazarus Church", address: "Plateia Agiou Lazarou", note: "Iconic 9th-century church." },
-    { time: "11:00", name: "Old Larnaka Wine Bar", address: "Zenon Kitieos 12", note: "Local varieties; try Commandaria." },
-    { time: "12:00", name: "Finikoudes Promenade", address: "Athenon Ave", note: "Seaside walk and coffee spot." },
+    { time: "10:00", name: "Saint Lazarus Church", address: "Plateia Agiou Lazarou", note: "Iconic 9th-century church.", lat: 34.91293, lng: 33.63533 },
+    { time: "11:00", name: "Old Larnaka Wine Bar", address: "Zenon Kitieos 12", note: "Local varieties; try Commandaria.", lat: 34.91574, lng: 33.63087 },
+    { time: "12:00", name: "Finikoudes Promenade", address: "Athenon Ave", note: "Seaside walk and coffee spot.", lat: 34.91177, lng: 33.63963 },
   ];
 
   const wineExtra = [
-    { time: "12:40", name: "Ktima Dafermou (tasting)", address: "Lefkara road", note: "Boutique Cypriot wines tasting." },
+    // Демонстрационный «доп. пункт» (условные координаты города/винодельни)
+    { time: "12:40", name: "Ktima Dafermou (tasting)", address: "Lefkara road", note: "Boutique Cypriot wines tasting.", lat: 34.8825, lng: 33.2895 },
   ];
 
   const historyExtra = [
-    { time: "12:40", name: "Larnaca Medieval Castle", address: "Athenon Ave 6", note: "Small fortress & museum by the sea." },
+    { time: "12:40", name: "Larnaca Medieval Castle", address: "Athenon Ave 6", note: "Small fortress & museum by the sea.", lat: 34.91054, lng: 33.64042 },
   ];
 
   const stops =
@@ -44,14 +45,12 @@ export async function GET(req: Request) {
     "Ammos Beach Bar — sunset drinks",
   ];
 
-  const payload = {
+  return NextResponse.json({
     title: `${cap(city)} — ${theme} (${duration})`,
     meta: `Guide: ${persona}`,
     city, theme, duration, persona,
     stops,
     tips,
     food,
-  };
-
-  return NextResponse.json(payload, { status: 200 });
+  });
 }

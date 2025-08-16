@@ -1,37 +1,38 @@
 // app/itinerary/page.tsx
-import MapClient from "@/components/MapClient";
+import ItineraryMapWrapper from "@/components/ItineraryMapWrapper";
 import ItineraryListClient from "@/components/ItineraryListClient";
+import { headers } from "next/headers";
 
 type SP = { [k: string]: string | string[] | undefined };
 
 function pick(v?: string | string[]) {
-  return Array.isArray(v) ? v[0] : v ?? "";
+  return Array.isArray(v) ? (v[0] ?? "") : (v ?? "");
 }
 
 function qsFromSP(sp: SP) {
   const u = new URLSearchParams();
   for (const [k, v] of Object.entries(sp)) {
     if (typeof v === "string") u.set(k, v);
-    else if (Array.isArray(v) && v[0]) u.set(k, v[0] as string);
+    else if (Array.isArray(v) && v[0]) u.set(k, v[0]);
   }
   return u.toString();
 }
 
-async function getItinerary(searchParams: SP) {
-  const qs = qsFromSP(searchParams);
-  // Always use an absolute URL for server components
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const url = qs
-    ? `${baseUrl.replace(/\/$/, "")}/api/itinerary?${qs}`
-    : `${baseUrl.replace(/\/$/, "")}/api/itinerary`;
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to load itinerary");
-  return res.json();
-}
 
 export default async function ItineraryPage({ searchParams }: { searchParams: SP }) {
+  // 👉 В Next 15 динамические API нужно "await"
   const params = await searchParams;
-  const data = await getItinerary(params);
+  const h = await headers();
+  const proto = h.get("x-forwarded-proto") ?? "http";
+  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
+  const base = `${proto}://${host}`;
+
+  const qs = qsFromSP(params);
+  const url = qs ? `${base}/api/itinerary?${qs}` : `${base}/api/itinerary`;
+
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Failed to load itinerary: ${res.status}`);
+  const data = await res.json();
 
   return (
     <div className="min-h-[100dvh] bg-background text-foreground p-6 space-y-6">
@@ -40,20 +41,9 @@ export default async function ItineraryPage({ searchParams }: { searchParams: SP
         <span className="text-sm text-muted-foreground">{data.meta}</span>
       </header>
 
-      <MapClient />
+  <ItineraryMapWrapper stops={data.stops} />
 
       <ItineraryListClient stops={data.stops} />
-
-      {/* Правый сайдбар можно добавить позже:
-      <aside className="space-y-4">
-        <div className="card">
-          <h2 className="font-medium mb-2">Tips</h2>
-          <ul className="list-disc pl-5 text-sm space-y-1">
-            {data.tips.map((t: string, i: number) => <li key={i}>{t}</li>)}
-          </ul>
-        </div>
-      </aside>
-      */}
     </div>
   );
 }
