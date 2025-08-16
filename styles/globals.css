@@ -1,10 +1,9 @@
 @import "tailwindcss";
 @reference "tailwindcss";
 
-
 /* === Design tokens for Figma/shadcn export (Tailwind v4) === */
 @theme {
-  /* базовые цвета интерфейса */
+  /* Base surface */
   --color-background: #ffffff;
   --color-foreground: #0b1324; /* gray-900 */
 
@@ -17,32 +16,32 @@
   --color-popover: #ffffff;
   --color-popover-foreground: #0b1324;
 
-  /* брендовые цвета (под себя поправишь в любой момент) */
+  /* Brand */
   --color-primary: #2563eb;                 /* blue-600 */
   --color-primary-foreground: #ffffff;
 
   --color-secondary: #e5e7eb;               /* gray-200 */
   --color-secondary-foreground: #0b1324;
 
-  --color-accent: #eff6ff;                   /* blue-50 */
+  --color-accent: #eff6ff;                  /* blue-50 */
   --color-accent-foreground: #1e3a8a;       /* blue-900 */
 
   --color-destructive: #ef4444;             /* red-500 */
   --color-destructive-foreground: #ffffff;
 
-  /* элементы формы/бордеры/инпуты/кольцо фокуса */
-  --color-border: #e5e7eb;    /* gray-200 */
-  --color-input: #e5e7eb;     /* gray-200 */
-  --color-ring: #93c5fd;      /* blue-300 */
+  /* Forms / borders / focus ring */
+  --color-border: #e5e7eb;   /* gray-200 */
+  --color-input: #e5e7eb;    /* gray-200 */
+  --color-ring: #93c5fd;     /* blue-300 */
 
-  /* радиусы, чтобы работали классы вида rounded-[--radius] */
-  --radius: 0.75rem;          /* 12px */
+  /* Radii */
+  --radius: 0.75rem;    /* 12px */
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
   --radius-lg: 1rem;
 }
 
-/* (опционально) тёмная тема — если переключаешь классом .dark на <html> */
+/* Optional: dark theme by .dark on <html> */
 :root.dark {
   --color-background: #0b1324;
   --color-foreground: #e5e7eb;
@@ -73,7 +72,29 @@
   --color-ring: #60a5fa;
 }
 
-/* Доп. утилиты, если они используются в коде */
+/* ===== Global base ===== */
+html, body {
+  padding: 0;
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img { max-width: 100%; height: auto; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.2); border-radius: 9999px; }
+
+/* Utilities */
 .btn {
   @apply px-4 py-2 rounded-md font-medium text-white bg-primary hover:bg-primary/90 transition-colors duration-200;
 }
@@ -82,57 +103,9 @@
   @apply bg-card text-card-foreground rounded-[--radius] shadow p-4;
 }
 
-
-/* Настройки шрифта и базовые стили для всего приложения */
-html, body {
-  padding: 0;
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: #ffffff;
-  color: #111827; /* Tailwind gray-900 */
-}
-
-/* Ссылки без подчеркивания и с цветом темы */
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* Для изображений — чтобы не выходили за границы контейнера */
-img {
-  max-width: 100%;
-  height: auto;
-}
-
-/* Кастомный скроллбар */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background-color: rgba(0, 0, 0, 0.2);
-  border-radius: 9999px;
-}
-
-/* Utility: кнопка с плавным наведением */
-.btn {
-  @apply px-4 py-2 rounded-md font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200;
-}
-
-/* Utility: карточка */
-.card {
-  @apply bg-white rounded-lg shadow p-4;
-}
-
-/* Анимация fade-in для компонентов */
-.fade-in {
-  animation: fadeIn 0.3s ease-in-out forwards;
-}
+/* Animation */
+.fade-in { animation: fadeIn 0.3s ease-in-out forwards; }
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
