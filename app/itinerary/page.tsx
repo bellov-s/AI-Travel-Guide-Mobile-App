@@ -1,57 +1,59 @@
 // app/itinerary/page.tsx
-import { ItineraryStep } from "@/components/ItineraryStep";
+import MapClient from "@/components/MapClient";
+import ItineraryListClient from "@/components/ItineraryListClient";
 
-type SearchParams = {
-  city?: string;
-  theme?: string;
-  duration?: string;
-  persona?: string;
-};
+type SP = { [k: string]: string | string[] | undefined };
 
-export default async function ItineraryPage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
-  const city = (searchParams.city ?? "larnaca").toString();
-  const theme = (searchParams.theme ?? "history").toString();
-  const duration = (searchParams.duration ?? "halfday").toString();
-  const persona = (searchParams.persona ?? "local").toString();
+function pick(v?: string | string[]) {
+  return Array.isArray(v) ? v[0] : v ?? "";
+}
 
-  // MOCK-данные — позже заменим на /api/itinerary
-  const title = `${city.charAt(0).toUpperCase() + city.slice(1)} — ${theme} (${duration})`;
-  const meta = `Guide: ${persona}`;
+function qsFromSP(sp: SP) {
+  const u = new URLSearchParams();
+  for (const [k, v] of Object.entries(sp)) {
+    if (typeof v === "string") u.set(k, v);
+    else if (Array.isArray(v) && v[0]) u.set(k, v[0] as string);
+  }
+  return u.toString();
+}
 
-  const stops = [
-    { time: "10:00", name: "Saint Lazarus Church", address: "Plateia Agiou Lazarou", note: "Iconic 9th-century church." },
-    { time: "11:00", name: "Old Larnaka Wine Bar", address: "Zenon Kitieos 12", note: "Local varieties; try Commandaria." },
-    { time: "12:00", name: "Finikoudes Promenade", address: "Athenon Ave", note: "Seaside walk and coffee spot." },
-  ];
+async function getItinerary(searchParams: SP) {
+  const qs = qsFromSP(searchParams);
+  // Always use an absolute URL for server components
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const url = qs
+    ? `${baseUrl.replace(/\/$/, "")}/api/itinerary?${qs}`
+    : `${baseUrl.replace(/\/$/, "")}/api/itinerary`;
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error("Failed to load itinerary");
+  return res.json();
+}
+
+export default async function ItineraryPage({ searchParams }: { searchParams: SP }) {
+  const params = await searchParams;
+  const data = await getItinerary(params);
 
   return (
     <div className="min-h-[100dvh] bg-background text-foreground p-6 space-y-6">
       <header className="flex items-baseline justify-between">
-        <h1 className="text-2xl font-semibold">{title}</h1>
-        <span className="text-sm text-muted-foreground">{meta}</span>
+        <h1 className="text-2xl font-semibold">{data.title}</h1>
+        <span className="text-sm text-muted-foreground">{data.meta}</span>
       </header>
 
-      {/* placeholder карты — позже подключим Map SDK */}
-      <div className="h-64 rounded-[--radius] border bg-muted flex items-center justify-center text-sm text-muted-foreground">
-        Map placeholder
-      </div>
+      <MapClient />
 
-      <section className="grid gap-4 md:grid-cols-2">
-        {stops.map((s, i) => (
-          <ItineraryStep
-            key={i}
-            order={i + 1}
-            name={s.name}
-            note={s.note}
-            address={s.address}
-            time={s.time}
-          />
-        ))}
-      </section>
+      <ItineraryListClient stops={data.stops} />
+
+      {/* Правый сайдбар можно добавить позже:
+      <aside className="space-y-4">
+        <div className="card">
+          <h2 className="font-medium mb-2">Tips</h2>
+          <ul className="list-disc pl-5 text-sm space-y-1">
+            {data.tips.map((t: string, i: number) => <li key={i}>{t}</li>)}
+          </ul>
+        </div>
+      </aside>
+      */}
     </div>
   );
 }

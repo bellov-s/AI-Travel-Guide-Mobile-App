@@ -1,6 +1,15 @@
 @import "tailwindcss";
 @reference "tailwindcss";
 
+:root { --radius: 0.75rem; }
+
+@layer components {
+  .card {
+    border-radius: var(--radius);
+    @apply border bg-card text-card-foreground p-4 shadow-sm;
+  }
+}
+
 /* === Design tokens for Figma/shadcn export (Tailwind v4) === */
 @theme {
   /* Base surface */
@@ -99,9 +108,7 @@ img { max-width: 100%; height: auto; }
   @apply px-4 py-2 rounded-md font-medium text-white bg-primary hover:bg-primary/90 transition-colors duration-200;
 }
 
-.card {
-  @apply bg-card text-card-foreground rounded-[--radius] shadow p-4;
-}
+
 
 /* Animation */
 .fade-in { animation: fadeIn 0.3s ease-in-out forwards; }
