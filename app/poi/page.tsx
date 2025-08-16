@@ -1,10 +1,24 @@
 // app/poi/page.tsx
-import POIScreen from "@/components/POIScreen";
+"use client";
+import * as React from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import * as P from "@/components/POIScreen";
+const POIScreen = (P as any).default ?? (P as any).POIScreen;
+
 export default function POIPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const poiId = Number(searchParams.get("poiId"));
+
+  const handleBack = () => {
+    router.back();
+  };
+
   return (
     <div className="min-h-[100dvh] bg-background text-foreground">
-      <POIScreen />
+      {POIScreen && poiId ? (
+        <POIScreen poiId={poiId} onBack={handleBack} />
+      ) : null}
     </div>
   );
 }
-// app/poi/page.tsx

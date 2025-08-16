@@ -1,7 +1,11 @@
+"use client";
+
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { MapPin, Menu, Square, Clock, Users } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+
 
 interface RouteData {
   city: string;
@@ -11,11 +15,12 @@ interface RouteData {
 }
 
 interface RouteScreenProps {
-  routeData: RouteData;
+  routeData?: RouteData;
   onApproachPOI: (poiId: number) => void;
   onMenu: () => void;
   onEndTour: () => void;
 }
+
 
 const mockPOIs = [
   { id: 1, name: "Notre Dame Cathedral", x: 30, y: 40 },
@@ -27,9 +32,22 @@ const mockPOIs = [
 export function RouteScreen({ routeData, onApproachPOI, onMenu, onEndTour }: RouteScreenProps) {
   const [currentPOI, setCurrentPOI] = useState(0);
   const [isActive, setIsActive] = useState(true);
+  const router = useRouter();
+
+  if (!routeData) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <h2 className="text-lg font-semibold mb-2">No route selected</h2>
+          <p className="text-muted-foreground">Please select a route to begin your tour.</p>
+        </div>
+      </div>
+    );
+  }
 
   const handlePOIClick = (poiId: number) => {
-    onApproachPOI(poiId);
+    // Navigate to POIScreen for the selected POI
+    router.push(`/poi?poiId=${poiId}`);
   };
 
   return (

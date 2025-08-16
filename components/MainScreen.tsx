@@ -1,26 +1,44 @@
+// components/MainScreen.tsx
+"use client";
+
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Label } from "./ui/label";
 
+type RouteData = {
+  city: string;
+  theme: string;
+  duration: string;
+  persona: string;
+};
+
 interface MainScreenProps {
-  onStartRoute: (routeData: {
-    city: string;
-    theme: string;
-    duration: string;
-    persona: string;
-  }) => void;
+  /** Колбэк опционален — если не передан, будет дефолтный переход на /route */
+  onStartRoute?: (routeData: RouteData) => void;
 }
 
 export function MainScreen({ onStartRoute }: MainScreenProps) {
+  const router = useRouter();
+
   const [city, setCity] = useState("");
   const [theme, setTheme] = useState("");
   const [duration, setDuration] = useState("");
   const [persona, setPersona] = useState("");
 
   const handleStart = () => {
-    if (city && theme && duration && persona) {
-      onStartRoute({ city, theme, duration, persona });
+    if (!(city && theme && duration && persona)) return;
+
+    const data: RouteData = { city, theme, duration, persona };
+
+    if (typeof onStartRoute === "function") {
+      // пользовательский обработчик
+      onStartRoute(data);
+    } else {
+      // дефолтное поведение: навигация с query-параметрами
+      const params = new URLSearchParams(data).toString();
+      router.push(`/route?${params}`);
     }
   };
 
@@ -28,7 +46,7 @@ export function MainScreen({ onStartRoute }: MainScreenProps) {
     <div className="min-h-screen bg-background p-4 ai-fade-in">
       <div className="max-w-sm mx-auto pt-16">
         <h1 className="text-center mb-12">Choose Your Route</h1>
-        
+
         <div className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="city" className="text-sm font-medium">City</Label>

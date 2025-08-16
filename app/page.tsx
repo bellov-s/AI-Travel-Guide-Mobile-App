@@ -1,15 +1,17 @@
 // app/page.tsx
-import type { ReactNode } from "react";
+import * as React from "react";
 
-// Важно: проверь, default это экспорт или именованный.
-// Если именованный: import { MainScreen } from "@/components/MainScreen";
-import MainScreen from "@/components/MainScreen";
+// Handle BOTH export styles:
+// - export default function MainScreen(){...}
+// - export function MainScreen(){...}
+import * as MS from "@/components/MainScreen";
+const MainScreen = (MS as any).default ?? (MS as any).MainScreen;
 
-export default function Home(): ReactNode {
+export default function Home() {
   return (
-    // Подхватываем токены из @theme (а не жёсткий белый фон)
     <div className="min-h-[100dvh] bg-background text-foreground">
-      <MainScreen />
+      {/* If MainScreen is missing, render nothing to avoid crash */}
+      {MainScreen ? <MainScreen /> : null}
     </div>
   );
 }

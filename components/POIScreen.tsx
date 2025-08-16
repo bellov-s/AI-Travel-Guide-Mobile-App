@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Button } from "./ui/button";
 import { ArrowLeft, Volume2, Mic } from "lucide-react";
